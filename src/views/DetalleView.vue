@@ -36,7 +36,7 @@ onMounted(async () => {
   }
 })
 
-// Agregar o quitar de favoritos (mismo patron de localStorage que vimos en clase)
+// Agregar o quitar la pelicula de favoritos (se guarda en localStorage)
 const toggleFavorito = () => {
   const favoritos = JSON.parse(localStorage.getItem('favoritos')) || []
   if (enFavoritos.value) {

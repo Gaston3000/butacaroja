@@ -153,7 +153,7 @@ const filtrarPorGenero = () => {
           <Card :pelicula="pelicula" />
         </v-col>
       </template>
-      <!-- Mientras carga muestro esqueletos (como en clase) -->
+      <!-- Mientras carga muestro unos esqueletos -->
       <template v-else>
         <v-col v-for="n in 8" :key="n" cols="12" sm="6" md="4" lg="3">
           <v-skeleton-loader height="400" type="image, article"></v-skeleton-loader>
