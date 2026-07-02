@@ -46,6 +46,10 @@ Aplicación web hecha con **Vue 3 + Vuetify** para buscar películas, ver su inf
    npm run dev
    ```
 
+> **Modo demo:** si todavía no cargaste una API key, la app arranca igual con un
+> conjunto de películas de ejemplo, así se puede probar sin configurar nada.
+> En cuanto pongas tu clave en el `.env`, pasa a usar los datos reales de TMDB.
+
 ## Autor
 
 Gastón Nicolás Costabella

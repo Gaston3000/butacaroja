@@ -1,9 +1,12 @@
 <script setup>
 import Card from '@/components/Card.vue'
 import { ref } from 'vue'
+import { peliculasDemo, generosDemo } from '@/demo/datosDemo.js'
 
 const API_KEY = import.meta.env.VITE_TMDB_API_KEY
 const BASE_URL = 'https://api.themoviedb.org/3'
+// Si todavia no cargaste tu API key en el .env, la app funciona en modo demo
+const MODO_DEMO = !API_KEY || API_KEY === 'tu_api_key_aca'
 
 const peliculas = ref([])
 const cargando = ref(true)
@@ -13,6 +16,11 @@ const generoElegido = ref(null)
 
 // Peliculas populares (es lo que se ve al entrar a la app)
 const cargarPopulares = () => {
+  if (MODO_DEMO) {
+    peliculas.value = peliculasDemo
+    cargando.value = false
+    return
+  }
   cargando.value = true
   fetch(BASE_URL + '/movie/popular?language=es-MX&page=1&api_key=' + API_KEY)
     .then((res) => res.json())
@@ -22,10 +30,14 @@ const cargarPopulares = () => {
 }
 
 // Traigo la lista de generos una sola vez para el filtro
-fetch(BASE_URL + '/genre/movie/list?language=es-MX&api_key=' + API_KEY)
-  .then((res) => res.json())
-  .then((data) => (generos.value = data.genres || []))
-  .catch((err) => console.log(err))
+if (MODO_DEMO) {
+  generos.value = generosDemo
+} else {
+  fetch(BASE_URL + '/genre/movie/list?language=es-MX&api_key=' + API_KEY)
+    .then((res) => res.json())
+    .then((data) => (generos.value = data.genres || []))
+    .catch((err) => console.log(err))
+}
 
 // Buscar peliculas por titulo
 const buscar = () => {
@@ -34,6 +46,11 @@ const buscar = () => {
     return
   }
   generoElegido.value = null
+  if (MODO_DEMO) {
+    const texto = busqueda.value.toLowerCase()
+    peliculas.value = peliculasDemo.filter((p) => p.title.toLowerCase().includes(texto))
+    return
+  }
   cargando.value = true
   fetch(BASE_URL + '/search/movie?language=es-MX&query=' + busqueda.value + '&api_key=' + API_KEY)
     .then((res) => res.json())
@@ -49,6 +66,10 @@ const filtrarPorGenero = () => {
     return
   }
   busqueda.value = ''
+  if (MODO_DEMO) {
+    peliculas.value = peliculasDemo.filter((p) => p.genre_ids.includes(generoElegido.value))
+    return
+  }
   cargando.value = true
   fetch(BASE_URL + '/discover/movie?language=es-MX&with_genres=' + generoElegido.value + '&api_key=' + API_KEY)
     .then((res) => res.json())

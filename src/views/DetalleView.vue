@@ -1,10 +1,12 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
+import { peliculasDemo } from '@/demo/datosDemo.js'
 
 const API_KEY = import.meta.env.VITE_TMDB_API_KEY
 const BASE_URL = 'https://api.themoviedb.org/3'
 const urlImagen = 'https://image.tmdb.org/t/p/w500'
+const MODO_DEMO = !API_KEY || API_KEY === 'tu_api_key_aca'
 
 const route = useRoute()
 const pelicula = ref(null)
@@ -12,6 +14,14 @@ const cargando = ref(true)
 const enFavoritos = ref(false)
 
 onMounted(async () => {
+  // En modo demo busco la pelicula en los datos de ejemplo
+  if (MODO_DEMO) {
+    pelicula.value = peliculasDemo.find((p) => p.id == route.params.id)
+    const favoritos = JSON.parse(localStorage.getItem('favoritos')) || []
+    enFavoritos.value = favoritos.some((p) => p.id == pelicula.value?.id)
+    cargando.value = false
+    return
+  }
   try {
     const res = await fetch(BASE_URL + '/movie/' + route.params.id + '?language=es-MX&api_key=' + API_KEY)
     const data = await res.json()
